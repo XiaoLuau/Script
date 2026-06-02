@@ -5,8 +5,7 @@ until game:IsLoaded()
 local Library = {}
 Library.currentTab = nil
 Library.flags = {}
-Library.configs = {}
-local Config = Library.configs
+
 local CoreGui = cloneref(game:GetService('CoreGui'))
 local Players = cloneref(game:GetService('Players'))
 local TweenService = cloneref(game:GetService('TweenService'))
@@ -20,7 +19,7 @@ local ShouldTranslate = (not _G.XA_Translation) and (LocaleId:sub(1, 2) ~= 'zh')
 local Translation
 
 if ShouldTranslate then
-    Translation = loadstring(game:HttpGet('https://raw.githubusercontent.com/XiaoLuau/Scripts/main/XATranslation.lua'))()
+    Translation = loadstring(game:HttpGet('https://raw.githubusercontent.com/XiaoYunUwU/Scripts/main/XATranslation.lua'))()
     if Translation then
         Translation['取消'] = 'Cancel'
         Translation['确认'] = 'Confirm'
@@ -128,7 +127,13 @@ function Library.new(Library, name)
     local ElementColor = Color3.fromRGB(35, 40, 70)
     local BackgroundColor = Color3.fromRGB(255, 255, 255)
     local TextColor = Color3.fromRGB(255, 255, 255)
-
+    --[[
+    local Background = Color3.fromRGB(15, 15, 18)     
+    local MainColor = Color3.fromRGB(20, 20, 25)      
+    local ElementColor = Color3.fromRGB(28, 28, 35)  
+    local BackgroundColor = Color3.fromRGB(45, 45, 52) 
+    local TextColor = Color3.fromRGB(255, 255, 255)  
+    ]]
     local dogent = Instance.new('ScreenGui')
     local Main = Instance.new('Frame')
     local TabMain = Instance.new('Frame')
@@ -231,6 +236,7 @@ function Library.new(Library, name)
     ScriptTitle.TextXAlignment = Enum.TextXAlignment.Center
 
     local hue = 0
+
     task.spawn(function()
         while true do
             hue = (hue + 0.1 * task.wait(0.1)) % 1
@@ -476,11 +482,11 @@ function Library.new(Library, name)
 
             function section:Label(text)
                 text = Translate(text)
-
+                
                 local LabelModule = Instance.new('Frame')
                 local TextLabel = Instance.new('TextLabel')
                 local LabelC = Instance.new('UICorner')
-
+                
                 LabelModule.Name = 'LabelModule'
                 LabelModule.Parent = Objs
                 LabelModule.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -501,7 +507,7 @@ function Library.new(Library, name)
                 LabelC.Parent = TextLabel
                 return TextLabel
             end
-
+            
             function section.Colorpicker(section, text, flag, defaultColor, callback)
                 text = Translate(text)
 
@@ -977,13 +983,10 @@ function Library.new(Library, name)
                         updateColor(newColor)
                     end,
                     Module = ColorModule,
-                    flag = flag,
-                    type = "Colorpicker",
                 }
-                table.insert(Config, funcs)
+
                 return funcs
             end
-
             function section.Toggle(section, text, flag, enabled, callback)
                 text = Translate(text)
 
@@ -1060,10 +1063,7 @@ function Library.new(Library, name)
                         callback(state)
                     end,
                     Module = ToggleModule,
-                    flag = flag,
-                    type = "Toggle",
                 }
-                table.insert(Config, funcs)
 
                 if enabled ~= false then
                     funcs:SetState(flag, true)
@@ -1075,7 +1075,6 @@ function Library.new(Library, name)
 
                 return funcs
             end
-
             function section.Keybind(section, text, default, callback)
                 text = Translate(text)
 
@@ -1204,21 +1203,7 @@ function Library.new(Library, name)
                 end)
 
                 KeybindValue.Size = UDim2.new(0, KeybindValue.TextBounds.X + 30, 0, 28)
-
-                local funcs = {
-                    SetKey = function(self, keyName)
-                        bindKey = Enum.KeyCode[keyName]
-                        keyTxt = shortNames[keyName] or keyName
-                        KeybindValue.Text = keyTxt
-                        Library.flags[flag] = keyName
-                        callback(keyName)
-                    end,
-                    flag = flag,
-                    type = "Keybind",
-                }
-                table.insert(Config, funcs)
             end
-
             function section.Textbox(section, text, flag, default, callback)
                 text = Translate(text)
 
@@ -1307,19 +1292,8 @@ function Library.new(Library, name)
 
                 BoxBG.Size = UDim2.new(0, TextBox.TextBounds.X + 30, 0, 28)
 
-                local funcs = {
-                    SetText = function(self, newText)
-                        TextBox.Text = tostring(newText)
-                        Library.flags[flag] = newText
-                        callback(newText)
-                    end,
-                    flag = flag,
-                    type = "Textbox",
-                }
-                table.insert(Config, funcs)
                 return TextboxModule
             end
-
             function section.Slider(section, text, flag, default, min, max, precise, callback)
                 text = Translate(text)
 
@@ -1439,31 +1413,40 @@ function Library.new(Library, name)
 
                 local funcs = {
                     SetValue = function(self, value)
-                        local percent = (value - min) / (max - min)
-                        percent = math.clamp(percent, 0, 1)
-                        if precise then
-                            value = tonumber(string.format('%.1f', tostring(min + (max - min) * percent)))
-                        else
-                            value = math.floor(min + (max - min) * percent)
+                        local percent = (mouse.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X
+
+                        if value then
+                            percent = (value - min) / (max - min)
                         end
+
+                        percent = math.clamp(percent, 0, 1)
+
+                        if precise then
+                            value = value or tonumber(string.format('%.1f', tostring(min + (max - min) * percent)))
+                        else
+                            value = value or math.floor(min + (max - min) * percent)
+                        end
+
                         Library.flags[flag] = tonumber(value)
                         SliderValue.Text = tostring(value)
                         SliderPart.Size = UDim2.new(percent, 0, 1, 0)
+
                         callback(tonumber(value))
                     end,
-                    flag = flag,
-                    type = "Slider",
                 }
-                table.insert(Config, funcs)
 
                 MinSlider.MouseButton1Click:Connect(function()
                     local currentValue = Library.flags[flag]
+
                     currentValue = math.clamp(currentValue - 1, min, max)
+
                     funcs:SetValue(currentValue)
                 end)
                 AddSlider.MouseButton1Click:Connect(function()
                     local currentValue = Library.flags[flag]
+
                     currentValue = math.clamp(currentValue + 1, min, max)
+
                     funcs:SetValue(currentValue)
                 end)
                 funcs:SetValue(default)
@@ -1476,6 +1459,7 @@ function Library.new(Library, name)
                 SliderBar.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                         funcs:SetValue()
+
                         dragging = true
                     end
                 end)
@@ -1494,6 +1478,7 @@ function Library.new(Library, name)
                 end)
                 SliderValue.FocusLost:Connect(function()
                     boxFocused = false
+
                     if SliderValue.Text == '' then
                         funcs:SetValue(default)
                     end
@@ -1502,8 +1487,11 @@ function Library.new(Library, name)
                     if not boxFocused then
                         return
                     end
+
                     SliderValue.Text = SliderValue.Text:gsub('%D+', '')
+
                     local text = SliderValue.Text
+
                     if not tonumber(text) then
                         SliderValue.Text = SliderValue.Text:gsub('%D+', '')
                     elseif not allowed[text] then
@@ -1511,13 +1499,13 @@ function Library.new(Library, name)
                             text = max
                             SliderValue.Text = tostring(max)
                         end
+
                         funcs:SetValue(tonumber(text))
                     end
                 end)
 
                 return funcs, SliderModule
             end
-
             function section.Dropdown(section, text, flag, options, default, callback)
                 text = Translate(text)
 
@@ -1708,14 +1696,7 @@ function Library.new(Library, name)
                         funcs:AddOption(v)
                     end
                 end
-                funcs.SetOption = function(self, value)
-                    DropdownText.Text = text .. ' - ' .. value
-                    Library.flags[flag] = value
-                    callback(value)
-                end
-                funcs.flag = flag
-                funcs.type = "Dropdown"
-                table.insert(Config, funcs)
+                funcs:SetOptions(options)
                 return funcs
             end
             return section
