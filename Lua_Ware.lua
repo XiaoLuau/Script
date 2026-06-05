@@ -19,7 +19,7 @@ local ShouldTranslate = (not _G.XA_Translation) and (LocaleId:sub(1, 2) ~= 'zh')
 local Translation
 
 if ShouldTranslate then
-    Translation = loadstring(game:HttpGet('https://raw.githubusercontent.com/XiaoYunUwU/Scripts/main/XATranslation.lua'))()
+    Translation = loadstring(game:HttpGet('https://raw.githubusercontent.com/XiaoLuau/Scripts/main/XATranslation.lua'))()
     if Translation then
         Translation['取消'] = 'Cancel'
         Translation['确认'] = 'Confirm'
@@ -112,7 +112,7 @@ local function switchTab(new)
 end
 
 task.spawn(function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/XiaoYunUwU/Scripts/main/WebHook.lua'))('XAHub')
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/XiaoLuau/Scripts/main/WebHook.lua'))('XAHub')
 end)
 
 function Library.new(Library, name)
