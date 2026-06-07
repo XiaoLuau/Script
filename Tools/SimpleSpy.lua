@@ -80,16 +80,16 @@ local decompile = decompile or newcclosure(function(target)
             Url = "http://api.plusgiant5.com/konstant/decompile",
             Method = "POST",
             Body = bytecode,
-			Headers = {
-				["Content-Type"] = "text/plain"
-			}
+                        Headers = {
+                                ["Content-Type"] = "text/plain"
+                        }
         })
         if output.StatusCode == 200 then
             return output.Body
         end
         return "-- failed to decompile bytecode: " .. output.StatusMessage
     end
-	return "-- failed to decompile bytecode"
+        return "-- failed to decompile bytecode"
 end)
 
 local function Create(instance, properties, children)
@@ -113,7 +113,7 @@ local function IsCyclicTable(tbl)
 
     local function SearchTable(tbl)
         table.insert(checkedtables,tbl)
-        
+
         for i,v in next, tbl do -- Stupid mistake on my part thanks 59it for pointing it out
             if type(v) == "table" then
                 return table.find(checkedtables,v) and true or SearchTable(v)
@@ -189,7 +189,7 @@ function ErrorPrompt(Message)
 end
 
 local Highlight = loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/Highlight.lua"))()
-local Serialize = loadstring(game:HttpGet("https://raw.githubusercontent.com/XiaoYunUwU/Scripts/main/Tools/Serializer.lua"))()
+local Serialize = loadstring(game:HttpGet("https://raw.githubusercontent.com/XiaoLuau/Scripts/main/Tools/Serializer.lua"))()
 
 local SimpleSpy3 = Create("ScreenGui",{
     Name = "SimpleSpy",
@@ -724,7 +724,7 @@ function newRemote(type, data)
     local ColorBar = Create("Frame",{Name = "ColorBar",Parent = RemoteTemplate,BackgroundColor3 = (type == "event" and Color3.fromRGB(255, 242, 0)) or Color3.fromRGB(99, 86, 245),BorderSizePixel = 0,Position = UDim2.new(0, 0, 0, 1),Size = UDim2.new(0, 7, 0, 18),ZIndex = 2})
     local Text = Create("TextLabel",{TextTruncate = Enum.TextTruncate.AtEnd,Name = "Text",Parent = RemoteTemplate,BackgroundColor3 = Color3.new(1, 1, 1),BackgroundTransparency = 1,Position = UDim2.new(0, 12, 0, 1),Size = UDim2.new(0, 105, 0, 18),ZIndex = 2,Font = Enum.Font.SourceSans,Text = remote.Name,TextColor3 = TextColor3,TextSize = 14,TextXAlignment = Enum.TextXAlignment.Left})
     local Button = Create("TextButton",{Name = "Button",Parent = RemoteTemplate,BackgroundColor3 = Color3.new(0, 0, 0),BackgroundTransparency = 0.75,BorderColor3 = Color3.new(1, 1, 1),Position = UDim2.new(0, 0, 0, 1),Size = UDim2.new(0, 117, 0, 18),AutoButtonColor = false,Font = Enum.Font.SourceSans,Text = "",TextColor3 = Color3.new(0, 0, 0),TextSize = 14})
-    
+
     remote:GetPropertyChangedSignal("Name"):Connect(function()
         Text.Text = remote.Name
     end)
@@ -948,7 +948,7 @@ local newindex = function(method,originalfunction,...)
                 data.callingscript = calling and cloneref(calling) or nil
 
                 schedule(remoteHandler,data)
-                
+
                 if configs.logreturnvalues and IsA(remote, "RemoteFunction") and not blockcheck then
                     local returndata = originalfunction(...)
                     data.returnvalue.data = returndata
@@ -993,7 +993,7 @@ local newnamecall = newcclosure(function(self, ...)
                     data.callingscript = calling and cloneref(calling) or nil
 
                     schedule(remoteHandler,data)
-                    
+
                     if configs.logreturnvalues and IsA(remote, "RemoteFunction") and not blockcheck then
                         local returndata = originalNamecall(self, ...)
                         data.returnvalue.data = returndata
@@ -1134,7 +1134,7 @@ if not getgenv().SimpleSpyExecuted then
     codebox = Highlight.new(CodeBox)
     codebox:setRaw("SimpleSpy V3")
     getgenv().SimpleSpy = SimpleSpy
-    
+
     CloseButton.MouseButton1Click:Connect(shutdown)
     SimpleSpy3.Enabled = true
     schedulerconnect = RunService.Heartbeat:Connect(taskscheduler)
@@ -1222,7 +1222,7 @@ function()
             local SourceScript = rawget(getfenv(func),"script")
             local CallingScript = selected.Source or nil
             local info = {}
-            
+
             info = {
                 info = getinfo(func),
                 constants = lclosure and deepclone(getconstants(func)) or "N/A --Lua Closure expected got C Closure",
@@ -1232,7 +1232,7 @@ function()
                     CallingScript = CallingScript or 'nil'
                 }
             }
-                    
+
             if configs.advancedinfo then
                 local Remote = selected.Remote
 
